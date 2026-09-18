@@ -1,4 +1,4 @@
- .. Licensed to the Apache Software Foundation (ASF) under one
+.. Licensed to the Apache Software Foundation (ASF) under one
     or more contributor license agreements.  See the NOTICE file
     distributed with this work for additional information
     regarding copyright ownership.  The ASF licenses this file
@@ -33,6 +33,9 @@ In your Dag file, pass a list of tags you want to add to the Dag object:
 .. code-block:: python
 
   dag = DAG(dag_id="example_dag_tag", schedule="0 0 * * *", tags=["example"])
+
+.. note::
+   The maximum length of a tag is 100 characters.
 
 
 **Screenshot**:
