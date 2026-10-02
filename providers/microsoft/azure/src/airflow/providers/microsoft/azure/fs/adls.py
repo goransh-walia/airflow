@@ -47,12 +47,22 @@ def get_fs(conn_id: str | None, storage_options: dict[str, Any] | None = None) -
     if connection_string:
         return AzureBlobFileSystem(connection_string=connection_string)
 
+    tenant_id = get_field(conn_id=conn_id, conn_type=conn_type, extras=extras, field_name="tenant_id")
+
+    account_name = None
+    if conn.host:
+        host_partition = conn.host.split("://")[-1].split("/")[0].split(":")[0]
+        account_name = host_partition.split(".")[0]
+    elif conn.login and not tenant_id:
+        account_name = conn.login
+
     options: dict[str, Any] = {
         "account_url": parse_blob_account_url(conn.host, conn.login),
     }
+    if account_name:
+        options["account_name"] = account_name
 
     # mirror handling of custom field "client_secret_auth_config" from extras. Ignore if missing as AzureBlobFileSystem can handle.
-    tenant_id = get_field(conn_id=conn_id, conn_type=conn_type, extras=extras, field_name="tenant_id")
     login = conn.login or ""
     password = conn.password or ""
     # assumption (from WasbHook) that if tenant_id is set, we want service principal connection
